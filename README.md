@@ -14,3 +14,6 @@ Just a speech on the basics of the Golang Tour and some additional compressed in
 
 ## Preview
 Refer to [principal.pdf](https://github.com/jialvarez/golang-basics/blob/main/principal.pdf) file to check a preview of the talk.
+
+## Screenshot
+![My journey trying to learn coding in Go: The basics](https://raw.githubusercontent.com/jialvarez/golang-basics/main/imgs/gobasics_screenshot.png "My journey trying to learn coding in Go: The basics")
