@@ -1,0 +1,301 @@
+\section{Methods}
+\begin{frame}[fragile]
+\frametitle{Receivers}
+
+\begin{lstlisting}
+package main
+
+import (
+    "fmt"
+    "math"
+)
+
+type Vertex struct {
+    X, Y float64
+}
+
+func (v Vertex) Abs() float64 {
+    return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+
+func (v *Vertex) Scale(f float64) {
+    v.X = v.X * f
+    v.Y = v.Y * f
+}
+
+
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Receivers}
+
+\begin{lstlisting}
+func main() {
+    v := Vertex{3, 4}
+    v.Scale(10)
+    fmt.Println(v)
+    fmt.Println(v.Abs())
+}
+
+// With a pointer receiver, you can modify the original value, as Scale 
+// does here
+// Abs method can just read the value
+
+// There are two reasons to use a pointer receiver.
+
+// The first is so that the method can modify the value that its receiver 
+// points to.
+
+// The second is to avoid copying the value on each method call. This 
+// can be more efficient if the receiver is a large struct, for example. 
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Interfaces}
+
+\begin{lstlisting}
+package main
+
+import (
+"fmt"
+"math"
+)
+
+type Abser interface {
+    Abs() float64
+}
+
+func main() {
+    var a Abser
+    f := MyFloat(-math.Sqrt2)
+    v := Vertex{3, 4}
+
+    a = f  // a MyFloat implements Abser
+    a = &v // a *Vertex implements Abser
+    a = v// v is a Vertex (not *Vertex) and does NOT implement Abser
+
+    fmt.Println(a.Abs())
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Interfaces}
+
+\begin{lstlisting}
+type MyFloat float64
+
+func (f MyFloat) Abs() float64 {
+    if f < 0 {
+        return float64(-f)
+    }
+    return float64(f)
+}
+
+type Vertex struct {
+    X, Y float64
+}
+
+func (v *Vertex) Abs() float64 {
+    return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Interfaces}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+type I interface {
+    M()
+}
+
+type T struct {
+    S string
+}
+
+func (t *T) M() {
+    if t == nil {
+        fmt.Println("<nil>")
+        return
+    }
+    fmt.Println(t.S)
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Interfaces}
+
+\begin{lstlisting}
+// Interface values with nil underlying values
+func main() {
+    var i I
+
+    var t *T
+    i = t
+    describe(i)
+    i.M()
+
+    i = &T{"hello"}
+    describe(i)
+    i.M()
+}
+
+func describe(i I) {
+    fmt.Printf("(%v, %T)\n", i, i)
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Interfaces}
+
+\begin{lstlisting}
+// Interface values with nil underlying values
+func main() {
+var i I
+
+var t *T
+i = t
+describe(i)
+i.M()
+
+i = &T{"hello"}
+describe(i)
+i.M()
+}
+
+func describe(i I) {
+fmt.Printf("(%v, %T)\n", i, i)
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Interfaces}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+func main() {
+    var i interface{} // empty interface
+    fmt.Printf("(%v, %T)\n", i, i)
+
+    i = 42
+    fmt.Printf("(%v, %T)\n", i, i)
+
+    var j interface{} = "hello"
+
+    s, ok := j.(string) // type assertions
+    fmt.Println(s, ok)
+
+    f, ok := j.(float64) // you could even switch by j.()type)
+    fmt.Println(f, ok)
+
+    f = j.(float64) // panic
+    fmt.Println(f)
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Stringers}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+type Person struct {
+    Name string
+    Age  int
+}
+
+func (p Person) String() string {
+    return fmt.Sprintf("%v (%v years)", p.Name, p.Age)
+}
+
+func main() {
+    a := Person{"Arthur Dent", 42}
+    z := Person{"Zaphod Beeblebrox", 9001}
+    fmt.Println(a, z)
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Errors}
+
+\begin{lstlisting}
+package main
+
+// import fmt & time here
+
+type MyError struct {
+    When time.Time
+    What string
+}
+
+func (e *MyError) Error() string {
+    return fmt.Sprintf("at %v, %s", e.When, e.What)
+}
+
+func run() error {
+    return &MyError{time.Now(), "it didn't work"}
+}
+
+func main() {
+    if err := run(); err != nil {
+        fmt.Println(err)
+    }
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Readers}
+
+\begin{lstlisting}
+package main
+
+import (
+    "fmt"
+    "io"
+    "strings"
+)
+
+func main() {
+    r := strings.NewReader("Hello, Reader!")
+
+    b := make([]byte, 8)
+    for {
+        n, err := r.Read(b)
+        fmt.Printf("n = %v err = %v b = %v\n", n, err, b)
+        fmt.Printf("b[:n] = %q\n", b[:n])
+        if err == io.EOF {
+            break
+        }
+    }
+}
+\end{lstlisting}
+\end{frame}

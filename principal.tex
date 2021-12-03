@@ -1,0 +1,56 @@
+\documentclass{beamer}
+\usepackage[spanish]{babel}
+\usepackage{beamerthemeshadow}
+\usepackage{pgf}
+\usepackage{eurosym}
+\usepackage{array}% http://ctan.org/pkg/array
+\usepackage{fontspec}
+\defaultfontfeatures{
+	Path = /usr/local/texlive/2017/texmf-dist/fonts/opentype/public/fontawesome/ }
+\usepackage{fontawesome}
+\usepackage{framed}
+\usepackage{verbatim}
+\newcolumntype{M}{>{\centering\arraybackslash}m{\dimexpr.25\linewidth-2\tabcolsep}}
+\usepackage{hyperref}
+\hypersetup{
+  breaklinks=true,
+  urlcolor=blue,
+}
+\usepackage{listings}
+\lstset{language=Go,basicstyle=\fontsize{8}{10}\selectfont\ttfamily}
+
+\usetheme{CambridgeUS}
+\usefonttheme{structurebold}
+
+
+\setbeamertemplate{itemize item}[triangle]
+
+\begin{document}
+
+
+\title{Golang}
+\subtitle{My journey trying to learn coding in Go:\\The basics}
+\author[Nacho Álvarez]{\texorpdfstring{Nacho Álvarez
+  \\ \faTwitter \hspace{5pt}@neonigma
+  \\ \faEnvelope \hspace{5pt}neonigma@gmail.com}{Author}}
+
+%\institute[Redsys]{\includegraphics[height=0.9cm]{imgs/redsys.jpg}}
+\date{\today}
+
+
+
+\frame{\centering \includegraphics[height=1.5cm]{imgs/goicon.png} \titlepage}
+
+\section[Índice]{}
+\frame{\tableofcontents}
+
+
+\input{whoami}
+\input{intro}
+\input{basics}
+\input{flowcontrol}
+\input{moretypes}
+\input{methods}
+\input{concurrency}
+
+\end{document}

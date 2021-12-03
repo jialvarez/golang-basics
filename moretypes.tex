@@ -1,0 +1,241 @@
+\section{More types}
+\begin{frame}[fragile]
+\frametitle{Pointers}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+func main() {
+    i, j := 42, 2701
+
+    p := &i         // point to i
+    fmt.Println(*p) // read i through the pointer
+    *p = 21         // set i through the pointer
+    fmt.Println(i)  // see the new value of i
+
+    p = &j         // point to j
+    *p = *p / 37   // divide j through the pointer
+    fmt.Println(j) // see the new value of j
+}
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Structs}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+type Vertex struct {
+    X, Y int
+}
+
+var (
+    v1 = Vertex{1, 2}  // has type Vertex
+    v2 = Vertex{X: 1}  // Y:0 is implicit (X literal)
+    v3 = Vertex{}      // X:0 and Y:0
+    p  = &Vertex{1, 2} // has type *Vertex
+)
+
+func main() {
+    fmt.Println(v1, p, v2, v3)
+}
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Arrays}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+func main() {
+    var a [2]string
+    a[0] = "Hello"
+    a[1] = "World"
+    fmt.Println(a[0], a[1])
+    fmt.Println(a)
+
+    primes := [6]int{2, 3, 5, 7, 11, 13}
+    fmt.Println(primes)
+}
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Slices}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+func main() {
+    names := [4]string{
+        "John",
+        "Paul",
+        "George",
+        "Ringo",
+    }
+    fmt.Println(names)
+
+    a := names[0:2]
+    b := names[1:3]
+    fmt.Println(a, b)
+
+    b[0] = "XXX" // as being a reference to array, modifies its value
+    fmt.Println(a, b)
+    fmt.Println(names)
+}
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Slices}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+func main() {
+    s := []int{2, 3, 5, 7, 11, 13} // slice literal
+    // can use s := make([]int, 0, 5) => [] (len 0, cap 5)
+
+    s = s[1:] // slice default
+    fmt.Println(s)
+
+    s = s[:0]  // Extend its length.
+    printSlice(s)
+
+    s = s[:3] // Drop its first two values.
+    printSlice(s) // can append s = append(s, 2, 3, 4)
+}
+
+func printSlice(s []int) {
+     fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Range}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+func main() {
+    pow := make([]int, 10)
+    for i := range pow {
+        pow[i] = 1 << uint(i) // == 2**i
+    }
+    for _, value := range pow {
+        fmt.Printf("%d\n", value)
+    }
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Maps}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+type Vertex struct {
+    Lat, Long float64
+}
+
+var m = map[string]Vertex{
+    "Bell Labs": Vertex{40.68433, -74.39967}, // type can be omitted
+    "Google": Vertex{37.42202, -122.08408},
+}
+
+func main() {
+    fmt.Println(m)
+    
+    m = make(map[string]Vertex) // another way
+    m["Bell Labs"] = Vertex{40.68433, -74.39967}
+    
+    v, ok := m["Bell Labs"] // also can delete(m, "Bell Labs")
+    fmt.Println("The value:", v, "Present?", ok)
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Function values}
+
+\begin{lstlisting}
+package main
+
+import (
+    "fmt"
+    "math"
+)
+
+func compute(fn func(float64, float64) float64) float64 {
+    return fn(3, 4)
+}
+
+func main() {
+    hypot := func(x, y float64) float64 {
+        return math.Sqrt(x*x + y*y)
+    }
+    fmt.Println(hypot(5, 12))
+
+   fmt.Println(compute(hypot))
+   fmt.Println(compute(math.Pow))
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Function closures}
+
+\begin{lstlisting}
+package main
+
+import "fmt"
+
+func adder() func(int) int {
+    sum := 0
+    return func(x int) int {
+        sum += x
+        return sum
+    }
+}
+
+func main() {
+    pos, neg := adder(), adder()
+    for i := 0; i < 10; i++ {
+        fmt.Println(
+            pos(i),
+            neg(-2*i),
+        )
+    }
+}
+\end{lstlisting}
+\end{frame}
