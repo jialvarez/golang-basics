@@ -13,4 +13,4 @@ Just a speech on the basics of the Golang Tour and some additional compressed in
 7. Concurrency
 
 ## Preview
-Refer to principal.pdf file to check a preview of the talk.
+Refer to [principal.pdf](https://github.com/jialvarez/golang-basics/blob/main/principal.pdf) file to check a preview of the talk.
